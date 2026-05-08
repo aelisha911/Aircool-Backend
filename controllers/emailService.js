@@ -33,13 +33,17 @@ const sendContactEmail = async (contactData) => {
 
   // Canonical params for Brevo template (use in template as {{params.name}}, etc.)
   const templateParams = {
-    name: name || "",
-    email: email || "",
-    phone: mobile || "",
-    city: city || "",
-    message: message || "",
-   
-
+    NAME: name || "",
+    EMAIL: email || "",
+    PHONE: mobile || "",
+    CITY: city || "",
+    MESSAGE: message || "",
+    // include lowercase keys too (some templates use {{params.name}})
+    // name: name || "",
+    // email: email || "",
+    // phone: mobile || "",
+    // city: city || "",
+    // message: message || "",
   };
 
   console.log("📤 Sending Brevo template with params:", templateParams);
@@ -56,7 +60,7 @@ const sendContactEmail = async (contactData) => {
       templateId: parseInt(process.env.BREVO_TEMPLATE_ID) || 2,
       params: templateParams,
     };
-    // console.log("🔑 Sending request to Brevo with params:", requestBody);
+    console.log("🔑 Sending request to Brevo with params:", JSON.stringify(requestBody, null, 2));
 
     const response = await retryWithBackoff(async () => {
       return await axios.post(
@@ -73,40 +77,7 @@ const sendContactEmail = async (contactData) => {
 
     console.log("📥 Brevo response:", response.data);
 
-    // Fallback: Send direct HTML email to ensure data appears (in case template placeholders don't match)
-    console.log("📧 Sending fallback direct HTML email...");
-    const htmlContent = `
-      <h2>📩 New Contact Form Submission</h2>
-      <table style="border-collapse: collapse; width: 100%;">
-        <tr><td style="padding: 8px; border: 1px solid #ddd;"><b>Name:</b></td><td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(name)}</td></tr>
-        <tr><td style="padding: 8px; border: 1px solid #ddd;"><b>Email:</b></td><td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(email)}</td></tr>
-        <tr><td style="padding: 8px; border: 1px solid #ddd;"><b>Phone:</b></td><td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(mobile || "N/A")}</td></tr>
-        <tr><td style="padding: 8px; border: 1px solid #ddd;"><b>City:</b></td><td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(city || "N/A")}</td></tr>
-        <tr><td style="padding: 8px; border: 1px solid #ddd;"><b>Message:</b></td><td style="padding: 8px; border: 1px solid #ddd;">${escapeHtml(message).replace(/\n/g, "<br>")}</td></tr>
-      </table>
-      <p style="margin-top: 20px; font-size: 12px; color: #666;">Received on: ${new Date().toLocaleString()}</p>
-    `;
-
-    const directResponse = await retryWithBackoff(async () => {
-      return await axios.post(
-        "https://api.brevo.com/v3/smtp/email",
-        {
-          sender: { email: process.env.EMAIL_USER, name: "AircoolDynamic" },
-          to: [{ email: recipientEmail }],
-          subject: `New Contact: ${name}`,
-          htmlContent: htmlContent,
-          textContent: `Name: ${name}\nEmail: ${email}\nPhone: ${mobile}\nCity: ${city}\nMessage: ${message}`,
-        },
-        {
-          headers: { "api-key": process.env.BREVO_API_KEY?.trim(), "Content-Type": "application/json" },
-          timeout: 30000,
-        }
-      );
-    }, 3, 2000);
-
-    console.log("📥 Direct HTML email response:", directResponse.data);
-
-    return { success: true, template: response.data, direct: directResponse.data, timestamp: new Date().toISOString() };
+    return { success: true, data: response.data, timestamp: new Date().toISOString() };
   } catch (error) {
     console.error("❌ Email send error (full):", error.message);
     console.error("❌ Email send error (response body):", error.response?.data);
