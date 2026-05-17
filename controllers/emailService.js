@@ -79,8 +79,7 @@ const sendContactEmail = async (contactData) => {
 
     return { success: true, data: response.data, timestamp: new Date().toISOString() };
   } catch (error) {
-    console.error("❌ Email send error (full):", error.message);
-    console.error("❌ Email send error (response body):", error.response?.data);
+  
     throw error;
   }
 };

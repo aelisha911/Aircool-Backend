@@ -9,7 +9,13 @@ const discountSchema = new mongoose.Schema(
 
     imageUrl: {
       type: String,
-      required: true,
+    },
+    videoUrl: {
+      type: String,
+    },
+    isInactive: {
+      type: Boolean,
+      default: false,
     },
   },
   { timestamps: true }

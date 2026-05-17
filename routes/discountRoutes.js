@@ -22,9 +22,9 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage });
 
-router.post("/", upload.single("image"), createDiscount);
+router.post("/", upload.any(), createDiscount);
 router.get("/", listDiscounts);
-router.put("/:id", upload.single("image"), updateDiscount);
+router.put("/:id", upload.any(), updateDiscount);
 router.delete("/:id", deleteDiscount);
 
 export default router;
