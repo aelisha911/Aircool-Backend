@@ -6,6 +6,7 @@ import discountRoutes from "./routes/discountRoutes.js";
 import cors from "cors";
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
+import reviewRoutes from "./routes/reviewRoutes.js";
 dotenv.config();
 
 const app = express();
@@ -13,7 +14,7 @@ const app = express();
 // ✅ VERY IMPORTANT MIDDLEWARES
 app.use(cors({
   origin: "http://localhost:8080", // Vite frontend
-  methods: ["GET", "POST", "PUT"],
+  methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
 // Database Connection
@@ -26,6 +27,7 @@ app.use("/uploads", express.static("uploads"));
 app.use("/api/discounts", discountRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
+app.use("/api/reviews", reviewRoutes);
 // // All routes here
 // app.use("/api", routes);
 
