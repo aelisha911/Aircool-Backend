@@ -1,5 +1,7 @@
 import Review from "../models/review.js";
 
+const parseBool = (v) => v === "on" || v === "true" || v === "1" || v === true;
+
 export const createReview = async (req, res) => {
   try {
     const { name, description, starNumbers } = req.body;
@@ -8,10 +10,13 @@ export const createReview = async (req, res) => {
       return res.status(400).json({ message: "Name, description and starNumbers are required" });
     }
 
+    const isInactive = parseBool(req.body.isInactive);
+
     const review = await Review.create({
       name,
       description,
       starNumbers: Number(starNumbers),
+      isInactive,
     });
 
     res.status(201).json(review);
@@ -43,6 +48,7 @@ export const updateReview = async (req, res) => {
     if (name !== undefined) review.name = name;
     if (description !== undefined) review.description = description;
     if (starNumbers !== undefined) review.starNumbers = Number(starNumbers);
+    if (req.body.isInactive !== undefined) review.isInactive = parseBool(req.body.isInactive);
 
     await review.save();
     res.json(review);
