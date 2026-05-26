@@ -13,7 +13,9 @@ const app = express();
 
 // ✅ VERY IMPORTANT MIDDLEWARES
 app.use(cors({
-  origin: "http://localhost:8080", // Vite frontend
+  origin: ["http://localhost:8080",
+    "https://aircool-frontend.onrender.com"
+  ], // Vite frontend
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
