@@ -4,22 +4,18 @@ const parseBool = (v) => v === "on" || v === "true" || v === "1" || v === true;
 
 export const createReview = async (req, res) => {
   try {
-    const { name, description, starNumbers } = req.body;
-
-    if (!name || !description || starNumbers === undefined) {
-      return res.status(400).json({ message: "Name, description and starNumbers are required" });
-    }
+    const { reviewer, review, rating } = req.body;
 
     const isInactive = parseBool(req.body.isInactive);
 
-    const review = await Review.create({
-      name,
-      description,
-      starNumbers: Number(starNumbers),
+    const reviewData = await Review.create({
+      reviewer,
+      review,
+      rating: rating !== undefined && rating !== "" ? Number(rating) : undefined,
       isInactive,
     });
 
-    res.status(201).json(review);
+    res.status(201).json(reviewData);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
@@ -37,21 +33,28 @@ export const listReviews = async (req, res) => {
 export const updateReview = async (req, res) => {
   try {
     const { id } = req.params;
-    const review = await Review.findById(id);
+    const reviewData = await Review.findById(id);
 
-    if (!review) {
+    if (!reviewData) {
       return res.status(404).json({ message: "Review not found" });
     }
 
-    const { name, description, starNumbers } = req.body;
+    const { reviewer, review, rating } = req.body;
 
-    if (name !== undefined) review.name = name;
-    if (description !== undefined) review.description = description;
-    if (starNumbers !== undefined) review.starNumbers = Number(starNumbers);
-    if (req.body.isInactive !== undefined) review.isInactive = parseBool(req.body.isInactive);
+    if (reviewer !== undefined) reviewData.reviewer = reviewer;
+    if (review !== undefined) reviewData.review = review;
 
-    await review.save();
-    res.json(review);
+    if (rating !== undefined && rating !== "") {
+      reviewData.rating = Number(rating);
+    }
+
+    if (req.body.isInactive !== undefined) {
+      reviewData.isInactive = parseBool(req.body.isInactive);
+    }
+
+    await reviewData.save();
+
+    res.json(reviewData);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
