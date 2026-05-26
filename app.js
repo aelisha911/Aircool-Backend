@@ -20,7 +20,9 @@ app.use(cors({
   credentials: true,
 }));
 // Database Connection
-connectDB();
+connectDB().catch((err) => {
+  console.log("DB Connection Error:", err);
+});
 
 // Middleware
 app.use(express.json());
@@ -35,10 +37,12 @@ app.use("/api/reviews", reviewRoutes);
 
 // Test Route
 app.get("/", (req, res) => {
-  res.send("Sage Motors Backend Running 🚀");
+  res.send("Aircool dynamics Backend Running 🚀");
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`Server running on port ${PORT}`)
-);
+// const PORT = process.env.PORT || 5000;
+// app.listen(PORT, () =>
+//   console.log(`Server running on port ${PORT}`)
+// );
+
+export default app;
