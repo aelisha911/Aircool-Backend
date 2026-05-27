@@ -14,7 +14,7 @@ const app = express();
 // ✅ VERY IMPORTANT MIDDLEWARES
 const frontendOrigins = process.env.FRONTEND_URLS
   ? process.env.FRONTEND_URLS.split(",").map((origin) => origin.trim())
-  : ["http://localhost:8080", "https://aircool-frontend-d13o.onrender.com"];
+  : ["http://localhost:8080/", "https://aircool-frontend-d13o.onrender.com"];
 
 app.use(cors({
   origin: frontendOrigins,

@@ -3,7 +3,7 @@ import mongoose from "mongoose";
 const connectDB = async () => {
   try {
     const conn = await mongoose.connect(process.env.MONGODB_URI);
-    console.log("DB URI =", process.env.MONGODB_URI);
+    // console.log("DB URI =", process.env.MONGODB_URI);
 
     // Remove legacy unique index from older schema versions if present.
     const discountsCollection = conn.connection.db.collection("discounts");
