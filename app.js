@@ -12,10 +12,12 @@ dotenv.config();
 const app = express();
 
 // ✅ VERY IMPORTANT MIDDLEWARES
+const frontendOrigins = process.env.FRONTEND_URLS
+  ? process.env.FRONTEND_URLS.split(",").map((origin) => origin.trim())
+  : ["http://localhost:8080", "https://aircool-frontend-d13o.onrender.com"];
+
 app.use(cors({
-  origin: ["http://localhost:8080",
-    "https://aircool-frontend.onrender.com"
-  ], // Vite frontend
+  origin: frontendOrigins,
   methods: ["GET", "POST", "PUT", "DELETE"],
   credentials: true,
 }));
