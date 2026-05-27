@@ -46,7 +46,7 @@ const sendContactEmail = async (contactData) => {
     // message: message || "",
   };
 
-  console.log("📤 Sending Brevo template with params:", templateParams);
+  // console.log("📤 Sending Brevo template with params:", templateParams);
 
   try {
     const recipients = [
@@ -60,7 +60,7 @@ const sendContactEmail = async (contactData) => {
       templateId: parseInt(process.env.BREVO_TEMPLATE_ID) || 2,
       params: templateParams,
     };
-    console.log("🔑 Sending request to Brevo with params:", JSON.stringify(requestBody, null, 1));
+    // console.log("🔑 Sending request to Brevo with params:", JSON.stringify(requestBody, null, 1));
 
     const response = await retryWithBackoff(async () => {
       return await axios.post(
@@ -75,7 +75,7 @@ const sendContactEmail = async (contactData) => {
     
    
 
-    console.log("📥 Brevo response:", response.data);
+    // console.log("📥 Brevo response:", response.data);
 
     return { success: true, data: response.data, timestamp: new Date().toISOString() };
   } catch (error) {
