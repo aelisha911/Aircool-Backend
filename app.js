@@ -17,6 +17,8 @@ const frontendOrigins = process.env.FRONTEND_URLS
   : [
       "http://localhost:8080",
       "https://aircool-frontend-d13o.onrender.com",
+      "https://aircooldynamics.com.au",
+      "https://www.aircooldynamics.com.au/",
     ];
 
 app.use(
