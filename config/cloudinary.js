@@ -1,9 +1,5 @@
 import { v2 as cloudinary } from "cloudinary";
-console.log("SERVER ENV:", {
-  cloud: process.env.CLOUDINARY_CLOUD_NAME,
-  key: process.env.CLOUDINARY_API_KEY,
-  secret: process.env.CLOUDINARY_API_SECRET ? "Loaded" : "Missing",
-});
+
 const cloudName = process.env.CLOUDINARY_CLOUD_NAME;
 const apiKey = process.env.CLOUDINARY_API_KEY;
 const apiSecret = process.env.CLOUDINARY_API_SECRET;
