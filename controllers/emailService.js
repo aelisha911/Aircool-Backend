@@ -79,7 +79,10 @@ const sendContactEmail = async (contactData) => {
 
     return { success: true, data: response.data, timestamp: new Date().toISOString() };
   } catch (error) {
-  
+  console.error("❌ Brevo ERROR");
+    console.error("Status:", error.response?.status);
+    console.error("Data:", error.response?.data);
+    console.error("Message:", error.message);
     throw error;
   }
 };
