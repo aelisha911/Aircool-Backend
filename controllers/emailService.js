@@ -46,40 +46,48 @@ const sendContactEmail = async (contactData) => {
     // message: message || "",
   };
 
-  // console.log("📤 Sending Brevo template with params:", templateParams);
+  const adminTemplateId = parseInt(process.env.BREVO_ADMIN_TEMPLATE_ID || "1", 10);
+  const customerTemplateId = parseInt(process.env.BREVO_CUSTOMER_TEMPLATE_ID || "3", 10);
 
-  try {
-    const recipients = [
-      { email: recipientEmail },
-      { email: email, name: name },
-    ];
-
- const requestBody = {
+  const sendTemplateEmail = async (recipient, templateId) => {
+    const requestBody = {
       sender: { email: process.env.EMAIL_USER, name: "AircoolDynamic" },
-      to: recipients,
-      templateId: parseInt(process.env.BREVO_TEMPLATE_ID) || 2,
+      to: [recipient],
+      templateId,
       params: templateParams,
     };
-    // console.log("🔑 Sending request to Brevo with params:", JSON.stringify(requestBody, null, 1));
 
-    const response = await retryWithBackoff(async () => {
-      return await axios.post(
+    return retryWithBackoff(async () => {
+      return axios.post(
         "https://api.brevo.com/v3/smtp/email",
         requestBody,
         {
-          headers: { "api-key": process.env.BREVO_API_KEY?.trim(), "Content-Type": "application/json" },
+          headers: {
+            "api-key": process.env.BREVO_API_KEY?.trim(),
+            "Content-Type": "application/json",
+          },
           timeout: 30000,
         }
       );
     }, 3, 2000);
-    
-   
+  };
 
-    // console.log("📥 Brevo response:", response.data);
+  try {
+    const [adminResponse, customerResponse] = await Promise.all([
+      sendTemplateEmail({ email: recipientEmail }, adminTemplateId),
+      sendTemplateEmail({ email, name }, customerTemplateId),
+    ]);
 
-    return { success: true, data: response.data, timestamp: new Date().toISOString() };
+    return {
+      success: true,
+      data: {
+        admin: adminResponse.data,
+        customer: customerResponse.data,
+      },
+      timestamp: new Date().toISOString(),
+    };
   } catch (error) {
-  console.error("❌ Brevo ERROR");
+    console.error("❌ Brevo ERROR");
     console.error("Status:", error.response?.status);
     console.error("Data:", error.response?.data);
     console.error("Message:", error.message);
