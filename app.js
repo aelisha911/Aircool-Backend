@@ -7,6 +7,7 @@ import cors from "cors";
 import userRoutes from "./routes/userRoutes.js";
 import adminRoutes from "./routes/adminRoutes.js";
 import reviewRoutes from "./routes/reviewRoutes.js";
+import homepageRoutes from "./routes/homepageRoutes.js";
 
 const app = express();
 
@@ -33,12 +34,20 @@ app.use("/api/discounts", discountRoutes);
 app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/reviews", reviewRoutes);
+app.use("/api/homepage", homepageRoutes);
 // // All routes here
 // app.use("/api", routes);
 
 // Test Route
 app.get("/", (req, res) => {
   res.send("Aircool dynamics Backend Running 🚀");
+});
+
+app.use((error, req, res, next) => {
+  if (error?.type === "entity.parse.failed") {
+    return res.status(400).json({ message: "Invalid JSON request body", errors: [] });
+  }
+  next(error);
 });
 
 const PORT = process.env.PORT || 5000;
