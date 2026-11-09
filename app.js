@@ -40,29 +40,15 @@ app.use("/api/users", userRoutes);
 app.use("/api/admin", adminRoutes);
 app.use("/api/reviews", reviewRoutes);
 app.use("/api/homepage", homepageRoutes);
-// // All routes here
+// All routes here
 // app.use("/api", routes);
 
 // Test Route
-// app.get("/", (req, res) => {
-//   res.send("Aircool dynamics Backend Running 🚀");
-// });
-
 app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "Homepage.html"));
+  res.send("Aircool dynamics Backend Running 🚀");
 });
 
-app.get("/services/central-ducted-air-conditioning", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "ducted-air-conditioning-adelaide.html"));
-});
 
-app.get("/services/ducted-gas-heating-adelaide", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "ducted-gas-heating-adelaide.html"));
-});
-
-app.get("/services/evaporative-air-conditioning", (req, res) => {
-  res.sendFile(path.join(__dirname, "public", "evaporative-air-conditioning-adelaide.html"));
-});
 
 app.use((error, req, res, next) => {
   if (error?.type === "entity.parse.failed") {
